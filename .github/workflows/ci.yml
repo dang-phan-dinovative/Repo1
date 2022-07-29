@@ -27,4 +27,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - name: logging commits
-      run: echo "${{ toJSON(github.event) }}"
+      run: git logs - ${{ github.event.commits }} --pretty=oneline
