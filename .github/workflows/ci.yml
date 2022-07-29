@@ -22,7 +22,7 @@ jobs:
           ref: ${{github.event.after}}
       - name: Get Commit Message
         run: |
-          WEBHOOK_URL='https://google.com'
+          WEBHOOK_URL='https://hooks.slack.com/services/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'
           REPO_NAME=${{ github.event.repository.name }}
           GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
           NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count) 
