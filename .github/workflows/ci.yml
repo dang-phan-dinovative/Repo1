@@ -27,5 +27,6 @@ jobs:
           GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
           NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count)
           SLACK_TEXT="${REPO_NAME} ${GIT_BRANCH}\n $(git log -n ${NUMBER} --pretty=format:"%h%x09%an%x09%s")"
+          echo "${SLACK_TEXT}"
           curl -X POST -H 'Content-type: application/json' --data '{"text":"${SLACK_TEXT}"}' ${WEBHOOK_URL}
         continue-on-error: true
