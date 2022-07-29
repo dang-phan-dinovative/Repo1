@@ -22,8 +22,10 @@ jobs:
           ref: ${{github.event.after}}
       - name: Get Commit Message
         run: |
+          YOUR_WEBHOOK_URL=WEBHOOK_URL
           REPO_NAME=${{ github.event.repository.name }}
           GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
           NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count) 
-          echo "${REPO_NAME} ${GIT_BRANCH}\n $(git log -n ${NUMBER} --pretty=format:"%h%x09%an%x09%s")"
+          SLACK_TEXT=$(echo "${REPO_NAME} ${GIT_BRANCH}\n $(git log -n ${NUMBER} --pretty=format:"%h%x09%an%x09%s")")
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"${SLACK_TEXT}"}' ${YOUR_WEBHOOK_URL}
         continue-on-error: true
