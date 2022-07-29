@@ -19,6 +19,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
+      env:
+        FORCE_COLOR: 0
     - name: Use Node.js ${{ matrix.node-version }}
       uses: actions/setup-node@v3
       with:
@@ -26,4 +28,3 @@ jobs:
         cache: 'npm'
     - run: git log -1
     - run: mkdir -p /home/runner/.npm
-        continue-on-error: true
