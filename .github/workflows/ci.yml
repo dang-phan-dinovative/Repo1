@@ -18,13 +18,17 @@ jobs:
         # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
 
     steps:
-    - uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       env:
-        FORCE_COLOR: 0
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - name: logging commits
-      run: git logs - ${{ github.event.commits }} --pretty=oneline
+      FORCE_COLOR: 0
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+          ref: ${{github.event.after}}
+      - name: Get Commit Message
+        run: |
+          MSG=$(git log --format=%B -n 1 ${{github.event.after}})
+          echo "::set-env name=COMMIT_MESSAGE::${MSG}"
+      - name: Echo commit message
+        run: echo "Commit SHA: ${{github.event.after}}, commit message: ${{env.COMMIT_MESSAGE}} (or ${COMMIT_MESSAGE})"
