@@ -27,4 +27,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - name: logging commits
-      run: git diff --name-only ${{ github.event.before }} ${{ github.event.after }}
+      run: echo "${{ toJSON(github.event) }}"
