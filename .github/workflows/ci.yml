@@ -25,6 +25,7 @@ jobs:
           WEBHOOK_URL='https://hooks.slack.com/services/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'
           REPO_NAME=${{ github.event.repository.name }}
           GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
-          NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count) 
-          curl -X POST -H 'Content-type: application/json' --data '{"text":"${REPO_NAME} ${GIT_BRANCH}\n $(git log -n ${NUMBER} --pretty=format:"%h%x09%an%x09%s")")"}' ${WEBHOOK_URL}
+          NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count)
+          SLACK_TEXT="${REPO_NAME} ${GIT_BRANCH}\n $(git log -n ${NUMBER} --pretty=format:"%h%x09%an%x09%s")"
+          curl -X POST -H 'Content-type: application/json' --data '{"text":"${SLACK_TEXT}"}' ${WEBHOOK_URL}
         continue-on-error: true
