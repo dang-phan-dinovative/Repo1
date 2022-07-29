@@ -6,9 +6,6 @@ name: Node.js CI
 on:
   push:
     branches: [ "main" ]
-  pull_request:
-    branches: [ "main" ]
-
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -26,4 +23,4 @@ jobs:
       - name: Get Commit Message
         run: |
           NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count) 
-          echo "$(git log --format=%B -n ${NUMBER} --oneline --pretty=format:"%h%x09%an%x09%ai%x09%B")"
+          echo "$(git log --format=%B -n ${NUMBER} --pretty=format:"%h%x09%an%x09%ad%x09%s")"
