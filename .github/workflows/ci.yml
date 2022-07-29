@@ -25,5 +25,5 @@ jobs:
           ref: ${{github.event.after}}
       - name: Get Commit Message
         run: |
-        NUMBER=$(git rev-list ${{github.event.before} ${{github.event.after}})
+        NUMBER=$(git rev-list ${{github.event.before}...${{github.event.after}} --count)
         git log --format=%B -n ${NUMBER}
