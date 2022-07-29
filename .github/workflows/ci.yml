@@ -27,4 +27,4 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - name: logging commits
-      run: ${{github.event.head_commit.message}}
+      run: git log --format='%s' ${{ github.event.before }} ${{ github.event.after }}
