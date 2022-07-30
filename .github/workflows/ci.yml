@@ -35,6 +35,8 @@ jobs:
               REPLACE_TEXT="<${GITHUB_COMMIT_URL}${element}|${element}>"
               SLACK_TEXT=$(echo $SLACK_TEXT | sed -e "s@$element@$REPLACE_TEXT@g")
           done
-          SLACE_HEADER="*${REPO_NAME} ${GIT_BRANCH}*\n"
-          curl -X POST -H 'Content-type: application/json' --data '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"${SLACE_HEADER}\n${SLACK_TEXT}"}}]}' ${WEBHOOK_URL}
+          SLACK_HEADER="*${REPO_NAME} ${GIT_BRANCH}*\n"
+          MESSAGES=$(echo '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"${SLACK_HEADER}\n${SLACK_TEXT}"}}]}')
+          echo ${MESSAGES}
+          curl -X POST -H 'Content-type: application/json' --data '${MESSAGES}' ${WEBHOOK_URL}
         continue-on-error: true
