@@ -32,7 +32,7 @@ jobs:
           SHA_IDS=""
           for (( i=1; i<="${NUMBER}"; i++ ))
           do
-            element="$(git show HEAD~${i} --pretty=format:"%h%x09%an%x09%s")"
+            element="$(git show HEAD~"${i}" --pretty=format:"%h" --no-patch)"
             SLACK_TEXT="$(git show element --pretty=format:"%h%x09%an%x09%s")"
             echo "${SLACK_TEXT}"
             REPLACE_TEXT="\n><${GITHUB_COMMIT_URL}${element}|${element}>"
