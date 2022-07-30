@@ -32,12 +32,12 @@ jobs:
           IFS='%s\n' read -r -a logs <<< "${SHA_IDS}"
           for element in "${logs[@]}"
           do
-              REPLACE_TEXT="<${GITHUB_COMMIT_URL}${element}|${element}>"
+              REPLACE_TEXT="><${GITHUB_COMMIT_URL}${element}|${element}>"
               SLACK_TEXT=$(echo $SLACK_TEXT | sed -e "s@$element@$REPLACE_TEXT@g")
           done
           SLACK_HEADER="*${REPO_NAME} ${GIT_BRANCH}*\n"
           REPLACEMENT_WITH_MESSAGE="${SLACK_HEADER}\n${SLACK_TEXT}"
           MESSAGES=$(echo '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"REPLACEMENT_MESSAGE"}}]}' | sed -e "s@REPLACEMENT_MESSAGE@$REPLACEMENT_WITH_MESSAGE@g")
           echo "${MESSAGES}"
-          curl -X POST -H 'Content-type: application/json' --data ${MESSAGES} ${WEBHOOK_URL}
+          curl -X POST -H 'Content-type: application/json' --data '"${MESSAGES}"' ${WEBHOOK_URL}
         continue-on-error: true
