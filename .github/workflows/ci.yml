@@ -1,7 +1,7 @@
 # This workflow will do a clean installation of node dependencies, cache/restore them, build the source code and run tests across different versions of node
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-nodejs-with-github-actions
 
-name: Node.js CI
+name: CI
 
 on:
   push:
@@ -24,8 +24,8 @@ jobs:
         run: |
           GITHUB_COMMIT_URL="https://github.com/${{ github.repository }}/commit/"
           WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }}
-          REPO_NAME=${{ github.event.repository.name }}
-          GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
+          REPO_NAME=$(echo ${{ github.event.repository.name }} | tr '[:lower:]' '[:upper:]')
+          GIT_BRANCH=$(echo ${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}} | tr '[:lower:]' '[:upper:]')
           NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count)
           git log -n ${NUMBER} --pretty=format:"%h" > logs.txt
           SLACK_TEXTS=""
