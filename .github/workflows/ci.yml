@@ -27,7 +27,7 @@ jobs:
           REPO_NAME=${{ github.event.repository.name }}
           GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
           NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count)
-          SLACK_TEXT="$(git log -n ${NUMBER} --format="format:%h")"
+          SLACK_TEXT="$(git log -n ${NUMBER} --pretty=format:"%h")"
           SLACK_TEXTS=""
           SHA_IDS=$(printf "%s\n" "${SLACK_TEXT}" | awk '{print $1}')
           echo "${NUMBER}"
