@@ -30,12 +30,13 @@ jobs:
           SLACK_TEXT="$(git log -n ${NUMBER} --pretty=format:"%h%x09%an%x09%s")"
           SHA_IDS=$(printf "%s\n" "${SLACK_TEXT}" | awk '{print $1}')
           IFS='%s\n' read -r -a logs <<< "${SHA_IDS}"
+          echo "${NUMBER}"
           for element in "${logs[@]}"
           do
-              REPLACE_TEXT="><${GITHUB_COMMIT_URL}${element}|${element}>"
+              REPLACE_TEXT="\n><${GITHUB_COMMIT_URL}${element}|${element}>"
               SLACK_TEXT=$(echo $SLACK_TEXT | sed -e "s@$element@$REPLACE_TEXT@g")
           done
-          SLACK_HEADER="*${REPO_NAME} ${GIT_BRANCH}*\n"
+          SLACK_HEADER="*${REPO_NAME} ${GIT_BRANCH}*"
           REPLACEMENT_WITH_MESSAGE="${SLACK_HEADER}\n${SLACK_TEXT}"
           MESSAGES=$(echo '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"REPLACEMENT_MESSAGE"}}]}' | sed -e "s@REPLACEMENT_MESSAGE@$REPLACEMENT_WITH_MESSAGE@g")
           echo "${MESSAGES}"
