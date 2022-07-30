@@ -47,5 +47,3 @@ jobs:
           echo "${MESSAGES}"
           curl -X POST -H 'Content-type: application/json' --data "${MESSAGES}" ${WEBHOOK_URL}
         continue-on-error: true
-
-for element in "${logs[@]}" do echo "${element}" done
