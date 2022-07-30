@@ -37,6 +37,6 @@ jobs:
           done
           SLACK_HEADER="*${REPO_NAME} ${GIT_BRANCH}*\n"
           MESSAGES=$(echo '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"${SLACK_HEADER}\n${SLACK_TEXT}"}}]}')
-          echo ${MESSAGES}
-          curl -X POST -H 'Content-type: application/json' --data '${MESSAGES}' ${WEBHOOK_URL}
+          echo "${MESSAGES}"
         continue-on-error: true
+        # curl -X POST -H 'Content-type: application/json' --data '${MESSAGES}' ${WEBHOOK_URL}
