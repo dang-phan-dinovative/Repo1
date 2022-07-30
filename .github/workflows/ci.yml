@@ -29,16 +29,15 @@ jobs:
           NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count)
           SLACK_TEXT="$(git log -n ${NUMBER} --pretty=format:"%h")"
           SLACK_TEXTS=""
-          SHA_IDS=$(printf "%s\n" "${SLACK_TEXT}" | awk '{print $1}')
-          echo "${NUMBER}"
-          IFS='%s\n' read -r -a logs <<< "${SHA_IDS}"
-          for element in "${logs[@]}"
+          SHA_IDS=""
+          for i in {1.."${NUMBER}"}
           do
-              SLACK_TEXT="$(git show ${element} --pretty=format:"%h%x09%an%x09%s")"
-              echo "${SLACK_TEXT}"
-              REPLACE_TEXT="\n><${GITHUB_COMMIT_URL}${element}|${element}>"
-              SLACK_TEXT=$(echo $SLACK_TEXT | sed -e "s@$element@$REPLACE_TEXT@g")
-              SLACK_TEXTS="${SLACK_TEXTS}${SLACK_TEXT}"
+            element="$(git show HEAD~${i} --pretty=format:"%h%x09%an%x09%s")"
+            SLACK_TEXT="$(git show element --pretty=format:"%h%x09%an%x09%s")"
+            echo "${SLACK_TEXT}"
+            REPLACE_TEXT="\n><${GITHUB_COMMIT_URL}${element}|${element}>"
+            SLACK_TEXT=$(echo $SLACK_TEXT | sed -e "s@$element@$REPLACE_TEXT@g")
+            SLACK_TEXTS="${SLACK_TEXTS}${SLACK_TEXT}"
           done
           echo "${SLACK_TEXTS}"
           SLACK_HEADER="*${REPO_NAME} ${GIT_BRANCH}*"
