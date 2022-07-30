@@ -27,12 +27,13 @@ jobs:
           REPO_NAME=${{ github.event.repository.name }}
           GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
           NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count)
-          SLACK_TEXT="$(git log -n ${NUMBER} --pretty=format:"%h")"
+          SLACK_TEXT="$(git log -n ${NUMBER} --pretty=format:"%h" > logs.txt)"
           SLACK_TEXTS=""
           SHA_IDS=""
           for (( i=0; i<"${NUMBER}"; i++ ))
           do
-            element="$(git show HEAD~${i} --pretty=format:"%h" --no-patch)"
+            commit=${grep -n ${i} logs.txt | sed -e "s@${i}:@@g"}
+            element="$(git show ${commit} --pretty=format:"%h" --no-patch)"
             SLACK_TEXT="$(git show ${element} --pretty=format:"%h%x09%an%x09%s")"
             echo "${SLACK_TEXT}"
             REPLACE_TEXT="\n><${GITHUB_COMMIT_URL}${element}|${element}>"
