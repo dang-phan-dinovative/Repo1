@@ -5,7 +5,7 @@ name: Node.js CI
 
 on:
   push:
-    branches: [ "main" ]
+    branches: [ "main", "develop" ]
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -22,6 +22,30 @@ jobs:
           ref: ${{github.event.after}}
       - name: Get Commit Message
         run: |
-          NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count) 
-          echo "$(git log --format=%B -n ${NUMBER} --pretty=format:"%h%x09%an%x09%ad%x09%s")"
+          GITHUB_COMMIT_URL="https://github.com/${{ github.repository }}/commit/"
+          WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }}
+          REPO_NAME=${{ github.event.repository.name }}
+          GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
+          NUMBER=$(git rev-list ${{github.event.before}}...${{github.event.after}} --count)
+          git log -n ${NUMBER} --pretty=format:"%h" > logs.txt
+          SLACK_TEXTS=""
+          SHA_IDS=""
+          for (( i=1; i<="${NUMBER}"; i++ ))
+          do
+            commit=$(sed "${i}q;d" logs.txt)
+            commit=${commit:0:7}
+            element="$(git show ${commit} --pretty=format:"%h" --no-patch)"
+            echo "ELEMENT: ${element}"
+            SLACK_TEXT="$(git show ${element} --pretty=format:"%h%x09%an%x09%s" --no-patch)"
+            echo "SLACK_TEXT: ${SLACK_TEXT}"
+            REPLACE_TEXT="\n><${GITHUB_COMMIT_URL}${element}|${element}>"
+            SLACK_TEXT=$(echo $SLACK_TEXT | sed -e "s@$element@$REPLACE_TEXT@g")
+            SLACK_TEXTS="${SLACK_TEXTS}${SLACK_TEXT}"
+          done
+          echo "${SLACK_TEXTS}"
+          SLACK_HEADER="*${REPO_NAME} ${GIT_BRANCH}*"
+          REPLACEMENT_WITH_MESSAGE="${SLACK_HEADER}${SLACK_TEXTS}"
+          MESSAGES=$(echo '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"'"${REPLACEMENT_WITH_MESSAGE}"'"}}]}')
+          echo "${MESSAGES}"
+          curl -X POST -H 'Content-type: application/json' --data "${MESSAGES}" ${WEBHOOK_URL}
         continue-on-error: true
