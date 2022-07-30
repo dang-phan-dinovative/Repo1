@@ -30,9 +30,9 @@ jobs:
           SLACK_TEXT="$(git log -n ${NUMBER} --pretty=format:"%h" > logs.txt)"
           SLACK_TEXTS=""
           SHA_IDS=""
-          for (( i=0; i<"${NUMBER}"; i++ ))
+          for (( i=1; i<="${NUMBER}"; i++ ))
           do
-            commit=${grep -n ${i} logs.txt | sed -e "s@${i}:@@g"}
+            commit=$(grep -n ${i} logs.txt | sed -e "s@${i}:@@g")
             element="$(git show ${commit} --pretty=format:"%h" --no-patch)"
             SLACK_TEXT="$(git show ${element} --pretty=format:"%h%x09%an%x09%s")"
             echo "${SLACK_TEXT}"
