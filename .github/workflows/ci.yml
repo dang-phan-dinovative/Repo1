@@ -30,7 +30,7 @@ jobs:
           SLACK_TEXT="$(git log -n ${NUMBER} --pretty=format:"%h")"
           SLACK_TEXTS=""
           SHA_IDS=""
-          for i in {1.."${NUMBER}"}
+          for (( i=1; i<="${NUMBER}"; i++ ))
           do
             element="$(git show HEAD~${i} --pretty=format:"%h%x09%an%x09%s")"
             SLACK_TEXT="$(git show element --pretty=format:"%h%x09%an%x09%s")"
