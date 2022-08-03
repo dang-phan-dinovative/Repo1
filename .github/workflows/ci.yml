@@ -47,7 +47,7 @@ jobs:
             SLACK_TEXTS="${SLACK_TEXTS}${SLACK_TEXT}"
           done
           echo "${SLACK_TEXTS}"
-          SLACK_HEADER="*[${REPO_NAME}](${GITHUB_REPO_URL}) [${GIT_BRANCH}](${GITHUB_BRANCH_COMMITS_URL})*"
+          SLACK_HEADER="[${REPO_NAME}](${GITHUB_REPO_URL}) [${GIT_BRANCH}](${GITHUB_BRANCH_COMMITS_URL})"
           REPLACEMENT_WITH_MESSAGE="${SLACK_HEADER}${SLACK_TEXTS}"
           MESSAGES=$(echo '{"chat_id":"'"${CHAT_ID}"'","text":"'"${REPLACEMENT_WITH_MESSAGE}"'", "parse_mode" : "markdown"}')
           echo "${MESSAGES}"

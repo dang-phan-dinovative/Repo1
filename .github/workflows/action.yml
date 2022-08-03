@@ -25,7 +25,7 @@ jobs:
           GITHUB_BRANCH_COMMITS_URL="${GITHUB_REPO_URL}commits/${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}"
           GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
           TEXT="A new pull request [#${{ github.event.number }}](${{ github.event.pull_request.url }}) has been created on branch [${GIT_BRANCH}](${GITHUB_BRANCH_COMMITS_URL})"
-          SLACK_HEADER="*[${REPO_NAME}](${GITHUB_REPO_URL})*"
+          SLACK_HEADER="[*${REPO_NAME}*](${GITHUB_REPO_URL})\n"
           TEXTS=${SLACK_HEADER}${TEXT}
           MESSAGES=$(echo '{"chat_id":"'"${CHAT_ID}"'","text":"'"${TEXTS}"'", "parse_mode" : "markdown"}')
           echo "${MESSAGES}"
