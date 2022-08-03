@@ -24,7 +24,9 @@ jobs:
         run: |
           GITHUB_REPO_URL="https://github.com/${{ github.repository }}/"
           GITHUB_COMMIT_URL="${GITHUB_REPO_URL}commit/"
-          WEBHOOK_URL=${{ secrets.SLACK_WEBHOOK_URL }}
+          BOT_TOKEN="5584194183:AAHuNofjFsY5Y2IhLPvCWP1GO3PH0e8wcDQ"
+          WEBHOOK_URL="https://api.telegram.org/bot{$BOT_TOKEN}/sendMessage"
+          CHAT_ID="699002063"
           REPO_NAME="${{ github.event.repository.name }}"
           GITHUB_BRANCH_COMMITS_URL="${GITHUB_REPO_URL}commits/${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}"
           GIT_BRANCH=${GITHUB_BASE_REF:-${GITHUB_REF#refs/heads/}}
@@ -40,14 +42,14 @@ jobs:
             echo "ELEMENT: ${element}"
             SLACK_TEXT="$(git show ${element} --pretty=format:"%h%x09%an%x09%s" --no-patch)"
             echo "SLACK_TEXT: ${SLACK_TEXT}"
-            REPLACE_TEXT="\n><${GITHUB_COMMIT_URL}${element}|${element}>"
+            REPLACE_TEXT="\n[${element}](${GITHUB_COMMIT_URL}${element})"
             SLACK_TEXT=$(echo $SLACK_TEXT | sed -e "s@$element@$REPLACE_TEXT@g")
             SLACK_TEXTS="${SLACK_TEXTS}${SLACK_TEXT}"
           done
           echo "${SLACK_TEXTS}"
-          SLACK_HEADER="*<${GITHUB_REPO_URL}|${REPO_NAME}:> <${GITHUB_BRANCH_COMMITS_URL}|${GIT_BRANCH}>*"
+          SLACK_HEADER="[${REPO_NAME}](${GITHUB_REPO_URL}) [${GIT_BRANCH}]({GITHUB_BRANCH_COMMITS_URL})"
           REPLACEMENT_WITH_MESSAGE="${SLACK_HEADER}${SLACK_TEXTS}"
-          MESSAGES=$(echo '{"blocks":[{"type":"section","text":{"type":"mrkdwn","text":"'"${REPLACEMENT_WITH_MESSAGE}"'"}}]}')
+          MESSAGES=$(echo '{"chat_id":"'"${CHAT_ID}"'","text":"'"${REPLACEMENT_WITH_MESSAGE}"'"}')
           echo "${MESSAGES}"
           curl -X POST -H 'Content-type: application/json' --data "${MESSAGES}" ${WEBHOOK_URL}
         continue-on-error: true
