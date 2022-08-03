@@ -27,7 +27,7 @@ jobs:
           TEXT="A new pull request [#${{ github.event.number }}](${{ github.event.pull_request.url }}) has been created on branch ${GIT_BRANCH}"
           SLACK_HEADER="[${REPO_NAME}](${GITHUB_REPO_URL}) [${GIT_BRANCH}]({GITHUB_BRANCH_COMMITS_URL})"
           TEXTS=${SLACK_HEADER}${TEXT}
-          MESSAGES=$(echo '{"chat_id":"'"${CHAT_ID}"'","text":"'"${TEXTS}"'"}')
+          MESSAGES=$(echo '{"chat_id":"'"${CHAT_ID}"'","text":"'"${TEXTS}"'", "parse_mode" : "markdown"}')
           echo "${MESSAGES}"
           curl -X POST -H 'Content-type: application/json' --data "${MESSAGES}" ${WEBHOOK_URL}
         continue-on-error: true
